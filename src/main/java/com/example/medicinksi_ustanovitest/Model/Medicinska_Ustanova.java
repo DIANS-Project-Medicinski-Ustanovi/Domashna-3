@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "Medicinski_Ustanovi")
 public class Medicinska_Ustanova {
-    //private
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Medicinska_ustanova_ID;
@@ -23,13 +23,10 @@ public class Medicinska_Ustanova {
     private String Latitude, Longitude;
     private String Zabeleshki;
 
-    public String getNaziv() {
-        return Naziv;
-    }
-
     public Double getLongitude() {
         return Double.parseDouble(Longitude);
     }
+
     public Double getLatitude() {
         return Double.parseDouble(Latitude);
     }
