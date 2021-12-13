@@ -164,14 +164,15 @@
 
 
                 <!-- Page Heading -->
-                <!--                    <h1 class="h3 mb-4 text-gray-800"><a> < Back to </a></h1>-->
                 <button class="button" style="margin-bottom: -25px" onclick="history.back()">&#xab; Назад</button>
                 <h1 style="margin-top: 50px"></h1>
                 <h1 th:text = "${DetailedViewLab.get().getNaziv()}" ></h1>
 
                 <th:block >
                     <span style="font-size: 1.2em">Категорија:</span>
-                   <i> <span th:text = "${DetailedViewLab.get().getKategorija()}" style="padding: 40px; font-size: 1.2em; color: #2d4373" >test1</span></i>
+                   <i>
+                       <span th:text = "${DetailedViewLab.get().getKategorija()}" style="padding: 40px;                                 font-size: 1.2em; color: #2d4373" >test1</span>
+                   </i>
 
                 </th:block>
 
@@ -184,7 +185,6 @@
                     <span style="font-size: 1.2em">Град:</span>
                     <span style="font-size: 1.2em" th:text = "${DetailedViewLab.get().getGrad()}">test</span>
                     <br>
-
                     <span style="font-size: 1.2em">Адреса:</span>
                     <span style="font-size: 1.2em" th:text = "${DetailedViewLab.get().getAdresa()}">test</span>
                     <br>
@@ -199,7 +199,7 @@
                     <br>
                     </div>
                     <br>
-                    <!--  Covid-19 Testing                   -->
+                    <!--  Covid-19 Testing Info                  -->
                     <div th:if="${DetailedViewLab.get().getBrz_antigenski_test() or
                                    DetailedViewLab.get().getImuno_test() or
                                     DetailedViewLab.get().getCovid19_PCR_test() }  ">
@@ -209,17 +209,17 @@
                     </div>
                     <div th:if="${DetailedViewLab.get().getImuno_test()}">
                         <br>
-                        <span style="font-size: 1.2em">Имуно тест:      &#x2611;</span>
+                        <span style="font-size: 1.28em">Имуно тест:     <b>&#x2713;</b></span>
                     </div>
 
                     <div th:if="${DetailedViewLab.get().getBrz_antigenski_test()}">
                         <br>
-                        <span style="font-size: 1.2em">Брз антигенски тест:     &#x2611;</span>
+                        <span style="font-size: 1.28em">Брз антигенски тест:    <b>&#x2713;</b></span>
                     </div>
 
                     <div th:if="${DetailedViewLab.get().getCovid19_PCR_test()}">
                         <br>
-                        <span style="font-size: 1.2em">Covid-19 PCR тест:       &#x2611;</span>
+                        <span style="font-size: 1.28em">Covid-19 PCR тест:       <b>&#x2713;</b></span>
                     </div>
                     <br>
                 </th:block>
@@ -254,7 +254,7 @@
                 <h3 style="font-weight: bold; color: #3b5998">Работни денови:</h3>
                 <table>
                     <tr>
-                        <th style="text-align: center">Денови</th>
+                        <th style="text-align: center">Ден</th>
                         <th style="text-align: center">Период</th>
                     </tr>
                     <tr>
