@@ -164,14 +164,15 @@
 
 
                 <!-- Page Heading -->
-                <!--                    <h1 class="h3 mb-4 text-gray-800"><a> < Back to </a></h1>-->
                 <button class="button" style="margin-bottom: -25px" onclick="history.back()">&#xab; Назад</button>
                 <h1 style="margin-top: 50px"></h1>
                 <h1 th:text = "${DetailedViewLab.get().getNaziv()}" ></h1>
 
                 <th:block >
                     <span style="font-size: 1.2em">Категорија:</span>
-                   <i> <span th:text = "${DetailedViewLab.get().getKategorija()}" style="padding: 40px; font-size: 1.2em; color: #2d4373" >test1</span></i>
+                   <i>
+                       <span th:text = "${DetailedViewLab.get().getKategorija()}" style="padding: 40px;                                 font-size: 1.2em; color: #2d4373" >test1</span>
+                   </i>
 
                 </th:block>
 
@@ -179,10 +180,11 @@
                 <hr class="sidebar-divider my-0">
                 <br>
                 <th:block>
+                    <h3 style="font-weight: bold; color: #3b5998">Контакт информации: </h3>
+                    <br>
                     <span style="font-size: 1.2em">Град:</span>
                     <span style="font-size: 1.2em" th:text = "${DetailedViewLab.get().getGrad()}">test</span>
                     <br>
-
                     <span style="font-size: 1.2em">Адреса:</span>
                     <span style="font-size: 1.2em" th:text = "${DetailedViewLab.get().getAdresa()}">test</span>
                     <br>
@@ -196,24 +198,48 @@
                     <span style="font-size: 1.2em" th:text = "${DetailedViewLab.get().getOcena()}">test</span>
                     <br>
                     </div>
+                    <br>
+                    <!--  Covid-19 Testing Info                  -->
+                    <div th:if="${DetailedViewLab.get().getBrz_antigenski_test() or
+                                   DetailedViewLab.get().getImuno_test() or
+                                    DetailedViewLab.get().getCovid19_PCR_test() }  ">
+                        <hr class="sidebar-divider my-0">
+                        <br>
+                        <h3 style="font-weight: bold; color: #3b5998"> Covid-19 тестирање: </h3>
+                    </div>
+                    <div th:if="${DetailedViewLab.get().getImuno_test()}">
+                        <br>
+                        <span style="font-size: 1.28em">Имуно тест:     <b>&#x2713;</b></span>
+                    </div>
+
+                    <div th:if="${DetailedViewLab.get().getBrz_antigenski_test()}">
+                        <br>
+                        <span style="font-size: 1.28em">Брз антигенски тест:    <b>&#x2713;</b></span>
+                    </div>
+
+                    <div th:if="${DetailedViewLab.get().getCovid19_PCR_test()}">
+                        <br>
+                        <span style="font-size: 1.28em">Covid-19 PCR тест:       <b>&#x2713;</b></span>
+                    </div>
+                    <br>
                 </th:block>
                 <br>
                 <hr class="sidebar-divider my-0">
-                <br>
                 <th:block>
+
                     <div th:if="${DetailedViewLab.get().getWebsite()} != null">
-                        <h3> Линк: </h3>
-                        <span >Линк до веб страна: </span>
+                        <br>
+                        <span style="font-size: 1.35em">Линк до веб страна: </span>
                         <a th:href="${DetailedViewLab.get().getWebsite()}" th:text="${DetailedViewLab.get().getWebsite()} "  style="padding: 40px; color: cornflowerblue;" target="_blank" ></a>
                     </div>
                     <br>
                     <div th:if="${DetailedViewLab.get().getOnline_booking()} != null">
-                        <span >Линк за резервација: </span>
+                        <span style="font-size: 1.35em">Линк за резервација: </span>
                         <a th:href="${DetailedViewLab.get().getOnline_booking()}"  th:text="${DetailedViewLab.get().getOnline_booking()}" style="padding: 40px; color: cornflowerblue;" target= "_blank" >test</a>
                     </div>
                     <br>
                     <div th:if="${DetailedViewLab.get().getCenovnik()} != null">
-                        <span >Линк до ценовник: </span>
+                        <span style="font-size: 1.35em">Линк до ценовник: </span>
                         <a th:href="${DetailedViewLab.get().getCenovnik()}" th:text="${DetailedViewLab.get().getCenovnik()}" style="padding: 40px; color: cornflowerblue;" target="_blank" >test</a>
                     </div>
                     <br>
@@ -225,10 +251,10 @@
                 <br>
                 <hr class="sidebar-divider my-0">
                 <br>
-                <h3>Работни денови:</h3>
+                <h3 style="font-weight: bold; color: #3b5998">Работни денови:</h3>
                 <table>
                     <tr>
-                        <th style="text-align: center">Денови</th>
+                        <th style="text-align: center">Ден</th>
                         <th style="text-align: center">Период</th>
                     </tr>
                     <tr>
@@ -264,15 +290,17 @@
                 <br>
                 <hr class="sidebar-divider my-0">
                 <br>
-                <h3> Слика: </h3>
-                <img th:src="${DetailedViewLab.get().getImgURL()}" style="padding: 50px; align-content: center; align-items: center; alignment: center;" alt="  No image for selected medical center">
+                <h3 style="font-weight: bold; color: #3b5998"> Слика: </h3> <br>
+                <img th:src="${DetailedViewLab.get().getImgURL()}" style="align-content: center; align-items: center; alignment: center" alt="  No image for selected medical center">
 
                 <br>
+                <br>
+
                 <hr class="sidebar-divider my-0">
 
 
                 <br>
-                <h3> Локација: </h3>
+                <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
                 <div style="width: 100%"><iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" th:src="@{'https://maps.google.com/maps?q={adresa}&width=100%25&amp height=600&amp;hl=en&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed' (latitude=${DetailedViewLab.get().getLatitude()}, longitude =${DetailedViewLab.get().getLongitude()}, adresa = ${DetailedViewLab.get().getAdresa()} )}">
                     <a href="https://www.gps.ie/sport-gps/">fitness tracker</a>
                 </iframe>
