@@ -80,9 +80,10 @@
             var naziv = /*[[${DetailedViewLab.get().getNaziv()}]]*/ 'default';
             var adresa = /*[[${DetailedViewLab.get().getAdresa()}]]*/ 'default';
             var kategroija = /*[[${DetailedViewLab.get().getKategorija()}]]*/ 'default';
+            var kontakt = /*[[${DetailedViewLab.get().getTel_broj()}]]*/ 'default';
             var map  = new google.maps.Map(document.getElementById("map"), {
                 zoom: 15,
-                center: location,
+                center: location
             });
             var marker  = new google.maps.Marker({
                 position: location,
@@ -93,13 +94,15 @@
 
             const infoWindow = new google.maps.InfoWindow({
                 content: '<span style="text-align: center">' + '<hr>'+
-                    '<h5> <b style="color: #3b5998">Име:</b> '+naziv+', '+kategroija +'</h5>' +
-                    '<h5> <b style="color: #3b5998">Адреса:</b> '+adresa+'</h5>' +  '<hr>'  +'</span>'
+                    '<h5> <b style="color: #3b5998">Име:</b> '+naziv+', <i style="color: lightsteelblue">'+kategroija +'</i></h5>' +
+                    '<h5> <b style="color: #3b5998">Адреса:</b> '+adresa+'</h5>' +
+                    '<h5> <b style="color: #3b5998">Контакт:</b> '+kontakt+'</h5>'+'<hr>'  +'</span>'
 
             });
             const infoWindow1 = new google.maps.InfoWindow({
-                content: '<h4 style="font-size: 19px; margin-top: 5px">Прикажи инфо...</h4>'
+                content: '<h4 style="font-size: 19px; margin-top: 5px">Прикажи инфо за медицинската установа...</h4>'
             });
+
 
             var elementIsClicked = false;
             var count =1;
@@ -108,13 +111,14 @@
                 if(elementIsClicked == false) {
                     infoWindow1.open(map, marker);
                 }
-
             });
+
             marker.addListener('mouseout', function() {
                 if(elementIsClicked == false){
-                infoWindow1.close();
+                    infoWindow1.close();
                 }
             });
+
 
             marker.addListener("click", function() {
 
@@ -133,6 +137,38 @@
 
             });
 
+            //KREIRANJE NA NOV USER LOACTION MARKER
+
+            var location_user  = {lat:41.9972, lng:21.4331};
+
+            var marker1  = new google.maps.Marker({
+                position: location_user,
+                map:map,
+                icon:"https://img.icons8.com/cotton/64/000000/nft-user.png"
+            });
+
+            const infoWindow2 = new google.maps.InfoWindow({
+                content: '<h4 style="font-size: 19px; margin-top: 5px">Твојата локација</h4>'
+            });
+
+            marker1.addListener("mouseover", function (){
+                    infoWindow2.open(map, marker1);
+            });
+            marker1.addListener('mouseout', function() {
+                    infoWindow2.close();
+            });
+
+            // Setiranje na centar na mapata
+
+            map.setCenter(new google.maps.LatLng(
+                ((latitude + 41.9972) / 2.0),
+                ((longitude + 21.4331) / 2.0)
+            ));
+
+            var bounds = new google.maps.LatLngBounds();
+            bounds.extend(location_user);
+            bounds.extend(location);
+            map.fitBounds(bounds);
 
         }
 
@@ -144,7 +180,7 @@
 
     <style>
         #map{
-            transition: transform .7s;
+            transition: transform .3s;
         }
         #map:hover{
             margin-top: 4px;
