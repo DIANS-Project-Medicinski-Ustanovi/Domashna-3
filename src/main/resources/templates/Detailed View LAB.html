@@ -111,6 +111,16 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf4zP2Sns3Xq-d7p6JIOrEqyR329YEg6w&callback=initMap">
     </script>
 
+    <style>
+        #map{
+            transition: transform .7s;
+        }
+        #map:hover{
+            margin-top: 4px;
+            transform: scale(1.05);
+        }
+    </style>
+
 
 
 
@@ -350,15 +360,12 @@
 
                 <br>
                 <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
-
+                <br>
+<!--                Map! -->
                 <div id="map" style="width: 100%; height: 600px">
 
-
                 </div>
-<!--                <div style="width: 100%"><iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" th:src="@{'https://maps.google.com/maps?q={adresa}&width=100%25&amp height=600&amp;hl=en&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed' (latitude=${DetailedViewLab.get().getLatitude()}, longitude =${DetailedViewLab.get().getLongitude()}, adresa = ${DetailedViewLab.get().getAdresa()} )}">-->
-<!--                    <a href="https://www.gps.ie/sport-gps/">fitness tracker</a>-->
-<!--                </iframe>-->
-<!--                </div>-->
+
 
             </div>
             <!-- End of Main Content -->
@@ -374,6 +381,7 @@
             <!-- End of Footer -->
 
          </div>
+    </div>
         <!-- End of Content Wrapper -->
 
 
