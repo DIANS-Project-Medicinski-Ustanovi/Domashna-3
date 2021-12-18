@@ -92,16 +92,17 @@
 
 
             const infoWindow = new google.maps.InfoWindow({
-                content: '<span style="text-align: center">' +
+                content: '<span style="text-align: center">' + '<hr>'+
                     '<h5> <b style="color: #3b5998">Име:</b> '+naziv+', '+kategroija +'</h5>' +
-                    '<h5> <b style="color: #3b5998">Адреса:</b> '+adresa+'</h5>' +'</span>'
+                    '<h5> <b style="color: #3b5998">Адреса:</b> '+adresa+'</h5>' +  '<hr>'  +'</span>'
 
             });
             const infoWindow1 = new google.maps.InfoWindow({
-                content: '<h3>Кликни ме</h3>'
+                content: '<h4 style="font-size: 19px; margin-top: 5px">Прикажи инфо...</h4>'
             });
 
             var elementIsClicked = false;
+            var count =1;
 
             marker.addListener("mouseover", function (){
                 if(elementIsClicked == false) {
@@ -116,10 +117,22 @@
             });
 
             marker.addListener("click", function() {
-                    infoWindow1.close();
-                    infoWindow.open(map, marker);
-                    elementIsClicked = true;
+
+              if(count==1)
+              {
+                  infoWindow1.close();
+                  infoWindow.open(map,marker)
+                  count=0;
+                  elementIsClicked=true;
+              }
+              else {
+                  infoWindow.close()
+                  count=1;
+                  elementIsClicked=false;
+              }
+
             });
+
 
         }
 
