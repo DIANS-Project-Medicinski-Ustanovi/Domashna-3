@@ -33,6 +33,26 @@
 
     </script>
 
+    <style>
+        #header > th{
+            transition: transform .7s;
+            margin: 0 auto;
+        }
+        #header > th:hover{
+            background-color: ghostwhite;
+            font-size: 115%;
+            color: #3b5998;
+            transform: scale(1.06);
+        }
+
+       #body_rows > th:hover{
+            padding-top: -7px;
+            background-color: ghostwhite;
+            font-size: 115%;
+            color: #3b5998;
+        }
+    </style>
+
 </head>
 
 <body id="page-top" onload="zoom()">
@@ -186,26 +206,32 @@
                             <h1>Covid - 19 Тестирање</h1>
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
-                                <tr>
+                                <tr id="header">
                                     <th style="text-align: center">Назив</th>
                                     <th style="text-align: center">Категорија</th>
                                     <th style="text-align: center">Адреса</th>
                                     <th style="text-align: center">Град</th>
                                     <th style="text-align: center">Веб страна</th>
                                     <th style="text-align: center">Тел. број</th>
-                                    <th style="text-align: center">Прикажи повеќе</th>
+                                    <th style="text-align: center"> <img src="https://img.icons8.com/cotton/64/000000/doctors-folder.png" style="width: 30px; height: 30px"/> </th>
                                 </tr>
                                 </thead>
                                 <tbody>
 
-                                <tr th:each="ustanova: ${Covid19TestingUstanovi}">
-                                    <td th:text="${ustanova.getNaziv()}" style="text-align: center; width: 250px; font-weight: bold">Назив</td>
+                                <tr th:each="ustanova: ${Covid19TestingUstanovi}" id="body_rows">
+                                    <th style="text-align: center">
+                                        <a th:href="@{'/MedicalLAB/{id}' (id=${ustanova.getMedicinska_ustanova_ID()})}" style="color: cornflowerblue; text-align: center; text-decoration: none">
+                                                    <span th:text="${ustanova.getNaziv()}" style="text-align: center; width: 250px; font-weight: bold">
+                                                        Назив
+                                                    </span>
+                                        </a>
+                                    </th>
                                     <td th:text="${ustanova.getKategorija()}">Категорија</td>
                                     <td th:text="${ustanova.getAdresa()}" style="text-align: left; width: 250px">Адреса</td>
                                     <td th:text="${ustanova.getGrad()}">Град</td>
                                     <td style="text-align: center"> <a th:href="${ustanova.getWebsite()}" target="_blank"> <span th:text="${ustanova.getWebsite()}">Веб страна</span></a></td>
                                     <td th:text="${ustanova.getTel_broj()}" style="text-align: left; width: 190px">Тел. број</td>
-                                    <th style="text-align: center"> <a th:href="@{'/MedicalLAB/{id}' (id=${ustanova.getMedicinska_ustanova_ID()})}" style="color: cornflowerblue; ">Прикажи повеќе</a> </th>
+                                    <td style="text-align: center"> <a th:href="@{'/MedicalLAB/{id}' (id=${ustanova.getMedicinska_ustanova_ID()})}" style="color: cornflowerblue; text-align: center">Прикажи повеќе</a> </td>
                                 </tr>
                                 </tbody>
                             </table>
