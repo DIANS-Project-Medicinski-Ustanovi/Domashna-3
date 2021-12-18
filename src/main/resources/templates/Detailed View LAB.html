@@ -17587,6 +17587,35 @@
             document.body.style.zoom = "85%"
         }
 
+
+        // Zemanje lokacija na user
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
+            }
+        }
+
+        var test;
+        var test1;
+
+        function showPosition(position) {
+            document.getElementById("latitude").innerHTML = position.coords.latitude;
+            document.getElementById("longitude").innerHTML = position.coords.longitude;
+            test = parseFloat(document.getElementById("latitude").innerHTML);
+            test1 = parseFloat(document.getElementById("longitude").innerHTML);
+        }
+
+        function showError(error) {
+            if (error.PERMISSION_DENIED) {
+                document.getElementById("lat").innerHTML = "The User have denied the request for Geolocation.";
+            }
+        }
+
+        getLocation();
+        // Zemanje lokacija na user END
+
         function initMap() {
 
             var latitude = [[${DetailedViewLab.get().getLatitude()}]];
@@ -17650,61 +17679,10 @@
 
             });
 
-
-        }
-
-    </script>
-
-    <!--    API key script-->
-    <script async
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf4zP2Sns3Xq-d7p6JIOrEqyR329YEg6w&callback=initMap">
-    </script>
-    <!-- END   API key script-->
-
-
-    <style>
-        #map {
-            transition: transform .3s;
-        }
-
-        #map:hover {
-            margin-top: 4px;
-            transform: scale(1.05);
-        }
-    </style>
-
-
-
-        <script>
-            // zemanje na lokacijata na user-ot
-            function getLocation() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition, showError);
-                } else {
-                    document.getElementById("latitude").innerHTML = "The Browser Does not Support Geolocation";
-                }
-            }
-            var test;
-            var test1;
-
-            function showPosition(position) {
-                document.getElementById("latitude").innerHTML = position.coords.latitude;
-                document.getElementById("longitude").innerHTML = position.coords.longitude;
-                 test = document.getElementById("latitude").innerHTML;
-                 test1 = document.getElementById("longitude").innerHTML;
-                console.log(test);
-                console.log(test1);
-            }
-
-            function showError(error) {
-                if (error.PERMISSION_DENIED) {
-                    document.getElementById("lat").innerHTML = "The User have denied the request for Geolocation.";
-                }
-            }
-
-            getLocation();
-
             //KREIRANJE NA NOV USER LOACTION MARKER
+
+            console.log(test);
+            console.log(test1);
 
             var location_user = {lat: test, lng: test1};
 
@@ -17727,6 +17705,8 @@
 
             // Setiranje na centar na mapata
 
+
+
             map.setCenter(new google.maps.LatLng(
                 ((latitude + test) / 2.0),
                 ((longitude + test1) / 2.0)
@@ -17736,9 +17716,27 @@
             bounds.extend(location_user);
             bounds.extend(location);
             map.fitBounds(bounds);
+        }
 
-        </script>
+    </script>
 
+    <!--    API key script-->
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf4zP2Sns3Xq-d7p6JIOrEqyR329YEg6w&callback=initMap">
+    </script>
+    <!-- END   API key script-->
+
+
+    <style>
+        #map {
+            transition: transform .3s;
+        }
+
+        #map:hover {
+            margin-top: 4px;
+            transform: scale(1.05);
+        }
+    </style>
 
     </head>
 
