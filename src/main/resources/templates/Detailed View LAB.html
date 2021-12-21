@@ -9,7 +9,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Detailed View - Med Center</title>
+    <!--    Style for map-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="//unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css"
+          type="text/css">
+    <script src="//unpkg.com/leaflet-gesture-handling"></script>
+    <!--    Style for map END-->
+
+    <title>Detailed View - Medical Center</title>
+
     <style>
         .button {
             background-color: rgba(78, 115, 223, .8);
@@ -17571,8 +17580,6 @@
         }
 
     </style>
-
-
     <!-- Custom fonts for this template-->
     <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
@@ -17582,165 +17589,46 @@
     <!-- Custom styles for this template-->
     <link href="sb-admin-2.min.css" rel="stylesheet">
 
-    <script type="text/javascript" th:inline="javascript">
+    <script>
         function zoom() {
             document.body.style.zoom = "85%"
         }
-
-
-        // Zemanje lokacija na user
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
-            }
-        }
-
-        var test;
-        var test1;
-
-        function showPosition(position) {
-            document.getElementById("latitude").innerHTML = position.coords.latitude;
-            document.getElementById("longitude").innerHTML = position.coords.longitude;
-            test = parseFloat(document.getElementById("latitude").innerHTML);
-            test1 = parseFloat(document.getElementById("longitude").innerHTML);
-        }
-
-        function showError(error) {
-            if (error.PERMISSION_DENIED) {
-                document.getElementById("lat").innerHTML = "The User have denied the request for Geolocation.";
-            }
-        }
-
-        getLocation();
-        // Zemanje lokacija na user END
-
-        function initMap() {
-
-            var latitude = [[${DetailedViewLab.get().getLatitude()}]];
-            var longitude = [[${DetailedViewLab.get().getLongitude()}]];
-            var location = {lat: latitude, lng: longitude};
-            var naziv = /*[[${DetailedViewLab.get().getNaziv()}]]*/ 'default';
-            var adresa = /*[[${DetailedViewLab.get().getAdresa()}]]*/ 'default';
-            var kategroija = /*[[${DetailedViewLab.get().getKategorija()}]]*/ 'default';
-            var kontakt = /*[[${DetailedViewLab.get().getTel_broj()}]]*/ 'default';
-            var map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: location
-            });
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                icon: "https://img.icons8.com/cotton/64/000000/find-clinic--v1.png"
-            });
-
-
-            const infoWindow = new google.maps.InfoWindow({
-                content: '<span style="text-align: center">' + '<hr>' +
-                    '<h5> <b style="color: #3b5998">Име:</b> ' + naziv + ', <i style="color: lightsteelblue">' + kategroija + '</i></h5>' +
-                    '<h5> <b style="color: #3b5998">Адреса:</b> ' + adresa + '</h5>' +
-                    '<h5> <b style="color: #3b5998">Контакт:</b> ' + kontakt + '</h5>' + '<hr>' + '</span>'
-
-            });
-            const infoWindow1 = new google.maps.InfoWindow({
-                content: '<h4 style="font-size: 19px; margin-top: 5px">Прикажи инфо за медицинската установа...</h4>'
-            });
-
-
-            var elementIsClicked = false;
-            var count = 1;
-
-            marker.addListener("mouseover", function () {
-                if (elementIsClicked == false) {
-                    infoWindow1.open(map, marker);
-                }
-            });
-
-            marker.addListener('mouseout', function () {
-                if (elementIsClicked == false) {
-                    infoWindow1.close();
-                }
-            });
-
-
-            marker.addListener("click", function () {
-
-                if (count == 1) {
-                    infoWindow1.close();
-                    infoWindow.open(map, marker)
-                    count = 0;
-                    elementIsClicked = true;
-                } else {
-                    infoWindow.close()
-                    count = 1;
-                    elementIsClicked = false;
-                }
-
-            });
-
-            //KREIRANJE NA NOV USER LOACTION MARKER
-
-            console.log(test);
-            console.log(test1);
-
-            var location_user = {lat: test, lng: test1};
-
-            var marker1 = new google.maps.Marker({
-                position: location_user,
-                map: map,
-                icon: "https://img.icons8.com/cotton/64/000000/nft-user.png"
-            });
-
-            const infoWindow2 = new google.maps.InfoWindow({
-                content: '<h4 style="font-size: 19px; margin-top: 5px">Твојата локација</h4>'
-            });
-
-            marker1.addListener("mouseover", function () {
-                infoWindow2.open(map, marker1);
-            });
-            marker1.addListener('mouseout', function () {
-                infoWindow2.close();
-            });
-
-            // Setiranje na centar na mapata
-
-
-
-            map.setCenter(new google.maps.LatLng(
-                ((latitude + test) / 2.0),
-                ((longitude + test1) / 2.0)
-            ));
-
-            var bounds = new google.maps.LatLngBounds();
-            bounds.extend(location_user);
-            bounds.extend(location);
-            map.fitBounds(bounds);
-        }
-
     </script>
-
-    <!--    API key script-->
-    <script async
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf4zP2Sns3Xq-d7p6JIOrEqyR329YEg6w&callback=initMap">
-    </script>
-    <!-- END   API key script-->
-
-
     <style>
         #map {
             transition: transform .3s;
+            border: 4px solid rgba(78, 115, 223, 0.7);
         }
 
         #map:hover {
             margin-top: 4px;
-            transform: scale(1.05);
+            transform: scale(1.042);
+            border: 4px solid rgb(78, 115, 223) ;
+        }
+        img {
+            transition: transform .3s;
+        }
+        img:hover {
+            transform: scale(1.042);
+        }
+        table, th, td {
+            border: 1px solid white;
+            border-collapse: separate;
+        }
+        th{
+            background-color: gainsboro;
+            color: #3b5998;
+            font-weight: bold;
+
+        }
+        td {
+            background-color: whitesmoke;
+            color: #3b5998;
         }
     </style>
-
     </head>
 
-<body id="page-top" onload="zoom(), getLocation()">
+<body id="page-top" onload="zoom()">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -17752,8 +17640,7 @@
         <!-- Sidebar - Brand - NAME -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home">
             <div class="sidebar-brand-icon">
-                <!--                    <img src="img/pulse-svgrepo-com.svg" height="30"-->
-                <!--                         width="30"/>-->
+
             </div>
             <div class="sidebar-brand-text mx-3">Go - LAB</div>
         </a>
@@ -17830,24 +17717,22 @@
         <!-- Main Content -->
         <div id="content">
 
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+            </nav>
+
             <!-- Begin Page Content -->
             <div class="container-fluid">
 
-
-                <!-- Page Heading -->
-                <button class="button" style="margin-bottom: -25px" onclick="history.back()">&#xab; Назад
+                <button class="button" style="margin-bottom: -20px; margin-top: -9px" onclick="history.back()">&#xab; Назад
                 </button>
+
+                <span style="text-align: center">
                 <h1 style="margin-top: 50px"></h1>
-                <h1 th:text="${DetailedViewLab.get().getNaziv()}"></h1>
-
-                <th:block>
-                    <span style="font-size: 1.2em">Категорија:</span>
-                    <i>
-                        <span th:text="${DetailedViewLab.get().getKategorija()}"
-                              style="padding: 40px;                                 font-size: 1.2em; color: #2d4373">test1</span>
-                    </i>
-
-                </th:block>
+                <h1 th:text="${DetailedViewLab.get().getNaziv()}" style="font-weight: bold"></h1>
+                </span>
+                <span style="font-size: 1.2em; color: #2d4373; font-style: italic; text-align: center">
+                        <h4 th:text="${DetailedViewLab.get().getKategorija()}"></h4>
+                </span>
 
 
                 <hr class="sidebar-divider my-0">
@@ -17871,7 +17756,6 @@
                         <span style="font-size: 1.2em" th:text="${DetailedViewLab.get().getOcena()}">test</span>
                         <br>
                     </div>
-                    <br>
                     <!--  Covid-19 Testing Info                  -->
                     <div th:if="${DetailedViewLab.get().getBrz_antigenski_test() or
                                    DetailedViewLab.get().getImuno_test() or
@@ -17901,6 +17785,8 @@
                 <th:block>
 
                     <div th:if="${DetailedViewLab.get().getWebsite()} != null">
+                        <br>
+                        <h3 style="font-weight: bold; color: #3b5998">Линк: </h3>
                         <br>
                         <span style="font-size: 1.35em">Линк до веб страна: </span>
                         <a th:href="${DetailedViewLab.get().getWebsite()}"
@@ -17984,26 +17870,26 @@
 
                 <br>
                 <hr class="sidebar-divider my-0">
+
+<!--                Image-->
                 <br>
                 <h3 style="font-weight: bold; color: #3b5998"> Слика: </h3> <br>
                 <img th:src="${DetailedViewLab.get().getImgURL()}"
                      style="align-content: center; align-items: center; alignment: center"
-                     alt="  No image for selected medical center">
-
+                     alt="  No image to show for selected medical center">
                 <br>
                 <br>
+<!--                Image END-->
 
+<!--                Location on map-->
                 <hr class="sidebar-divider my-0">
-                <div id="latitude"></div>
-                <div id="longitude"></div>
                 <br>
                 <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
                 <br>
-                <!--                Map! -->
                 <div id="map" style="width: 100%; height: 600px">
 
                 </div>
-
+<!--                Map END-->
 
             </div>
             <!-- End of Main Content -->
@@ -18049,5 +17935,63 @@
 <script src="../static/js/demo/datatables-demo.js"></script>
 
 </body>
+
+
+<!-- JS for map design and funct.-->
+<script>
+    var marker;
+    var layer;
+    var latitude = [[${DetailedViewLab.get().getLatitude()}]];
+    var longitude = [[${DetailedViewLab.get().getLongitude()}]];
+    var naziv = '[[${DetailedViewLab.get().getNaziv()}]]' ;
+    var adresa = '[[${DetailedViewLab.get().getAdresa()}]]';
+    var kategroija = '[[${DetailedViewLab.get().getKategorija()}]]';
+    var kontakt = '[[${DetailedViewLab.get().getTel_broj()}]]';
+    var markersLayer = new L.LayerGroup();
+
+     const map = L.map('map', {
+        gestureHandling: true // use ctrl+scroll to zoom on map
+    }).setView([42.006510, 21.421958], 13);
+
+
+   layer1 =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    layer2 =  L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    layer3 =  L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    var allOptions = {
+        "Default": layer1,
+        "Open streetmap: Hot": layer2,
+        "Open streetmap: Osm": layer3
+    };  // all layers
+
+    L.control.layers(allOptions).addTo(map);
+
+    var MedIcon = L.icon({
+        iconUrl: 'https://img.icons8.com/cotton/64/000000/find-clinic--v1.png',
+        iconSize:     [49, 49],
+        iconAnchor:   [14, 49], // point of the icon which will correspond to marker's location,
+        popupAnchor:  [9, -51] // point from which the popup should open relative to the iconAnchor
+    });
+
+    marker = L.marker([latitude, longitude],{
+        icon: MedIcon
+    }).addTo(map)
+        .bindPopup('<span style="text-align: center">' + '<hr>' +
+        '<h5> <b style="color: #3b5998">Име:</b> ' + naziv + ', <i style="color: #3b5998; font-size: smaller"> категорија: ' + kategroija + '</i></h5>' +
+        '<h5> <b style="color: #3b5998">Адреса:</b> ' + adresa + '</h5>' +
+        '<h5> <b style="color: #3b5998">Контакт:</b> ' + kontakt + '</h5>' + '<hr>' + '</span>')
+        .openPopup();
+
+    layer1.addTo(map);  //default layer
+
+</script>
+
+<!-- JS for map design and funct. END-->
 
 </html>
