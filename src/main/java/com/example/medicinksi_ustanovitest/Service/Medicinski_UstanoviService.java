@@ -17,4 +17,10 @@ public interface Medicinski_UstanoviService {
 
     public Integer covid();
 
+    List<Medicinska_Ustanova> findAllByCategory(String category);
+
+    List<Medicinska_Ustanova> findAllByCity(String city);
+
+    List<Medicinska_Ustanova> findAllNotCovid19Testing();
+
 }
