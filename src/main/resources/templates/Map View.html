@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 
 <head>
 
@@ -8,6 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+
+    <!--    Style for map-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="//unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css"
+          type="text/css">
+    <script src="//unpkg.com/leaflet-gesture-handling"></script>
+    <!--    Style for map END-->
 
     <title>Find your Medical Lab</title>
     <link rel="shortcut icon" href="img/pulseTabIcon.svg">
@@ -21,7 +30,7 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
-    <script type="text/javascript">
+    <script>
         function zoom() {
             document.body.style.zoom = "75%"
         }
@@ -169,12 +178,54 @@
                 <h1 class="h3 mb-4 text-gray-800">Пронајди ја твојата лабораторија</h1>
                 <div>
 
-                    <iframe width="100%" height="800" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
-                            src="https://www.easymapmaker.com/map/84d065e679bf0fff016926d89930ee2c"/>
-                    </iframe>
+
+
+
+                        <form th:method="POST" th:action="@{/map}">
+
+                            <select name="city">
+                                <option selected disabled hidden >Одбери град: </option>
+                                <option th:each="city : ${allCities}" th:value="${city}"
+                                        th:text="${city}" id="city" name="city"></option>
+                            </select>
+                            <select name="category">
+                                <option selected disabled hidden >Одбери категорија: </option>
+                                <option th:each="category : ${allCategories}" th:value="${category}"
+                                        th:text="${category}" id="category" name="category"></option>
+                            </select >
+                            <select name="covidTest">
+                                <option selected disabled hidden>Одбери: </option>
+                                <option name="covidTest">да</option>
+                                <option name="covidTest">не</option>
+                            </select>
+
+
+                            <input type="submit" value="Submit" id="submitId"/>
+
+
+                        </form>
+
 
                 </div>
 
+
+
+                <!--                Location on map-->
+                <hr class="sidebar-divider my-0">
+                <br>
+                <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
+                <br>
+                <div id="map" style="width: 100%; height: 600px">
+
+                </div>
+                <!--                Map END-->
+
+            <ul   th:each="med:${AllCovid19TestingLabs}">
+               <li class="test" th:text="${med.getLongitude()}"></li>
+            </ul>
+                <ul  th:each="med:${AllCovid19TestingLabs}">
+                    <li class="test_lat" th:text="${med.getLatitude()}"></li>
+                </ul>
             </div>
             <!-- /.container-fluid -->
 
@@ -212,5 +263,61 @@
 <script src="js/sb-admin-2.min.js"></script>
 
 </body>
+
+
+<!-- JS for map design and funct.-->
+<script>
+
+const map = L.map('map', {
+    gestureHandling: true
+}).setView([42.006510, 21.421958], 13);
+
+layer1 =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+layer2 =  L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+layer3 =  L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+var allOptions = {
+    "Default": layer1,
+    "Open streetmap: Hot": layer2,
+    "Open streetmap: Osm": layer3
+};  // all layers
+
+L.control.layers(allOptions).addTo(map);
+
+layer1.addTo(map);  //default layer
+
+
+
+
+</script>
+<script type="text/javascript">
+    var list_long;
+    var list_lat;
+    console.log(document.getElementsByClassName('test').length);
+    for (var i=1; i<document.getElementsByClassName('test').length; i++) {
+        list_long= list_long+','+ (document.getElementsByClassName('test').item(i).innerHTML)
+        list_lat= list_lat+','+ (document.getElementsByClassName('test_lat').item(i).innerHTML)
+    }
+
+    const temp_long = list_long.split(',');
+    const temp_lat = list_lat.split(',');
+
+    for (var i = 1; i < temp_long.length; i++) {
+
+        console.log(temp_long[i]+ ' '+ temp_lat[i]);
+        marker = L.marker([temp_lat[i], temp_long[i]]).addTo(map);
+    }
+
+    // console.log(list)
+</script>
+
+<!-- JS for map design and funct. END-->
+
 
 </html>

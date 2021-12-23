@@ -3,8 +3,10 @@ package com.example.medicinksi_ustanovitest.Service.impl;
 import com.example.medicinksi_ustanovitest.Model.Medicinska_Ustanova;
 import com.example.medicinksi_ustanovitest.Repository.jpa.Medicinski_UstanoviRepository;
 import com.example.medicinksi_ustanovitest.Service.Medicinski_UstanoviService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,8 +53,15 @@ public class Medicinski_UstanoviServiceImpl implements Medicinski_UstanoviServic
 
     @Override
     public List<Medicinska_Ustanova> findAllByCity(String city) {
+        String trimedCity;
+        if (city!=null) {
+            trimedCity = city.trim();
+        }
+        else {
+            trimedCity=city;
+        }
         return medicinski_ustanoviRepository.findAll()
-                .stream().filter(i -> i.getGrad().equals(city)).collect(Collectors.toList());
+                .stream().filter(i -> i.getGrad().contains(trimedCity)).collect(Collectors.toList());
     }
 
 
@@ -65,4 +74,64 @@ public class Medicinski_UstanoviServiceImpl implements Medicinski_UstanoviServic
                 .collect(Collectors.toList());
     }
 
+    public List<Medicinska_Ustanova> getMedicalLabsByFilter(String category, String city, String covid19Test) {
+        if (category==null && city==null && covid19Test==null) {
+            return findAllMedicinskiUstanovi();
+        } else if (category!=null && city==null && covid19Test==null) {
+            return findAllByCategory(category);
+        } else if (category==null && city!=null && covid19Test==null) {
+            return findAllByCity(city);
+        } else if (category==null && city==null && covid19Test!=null) {
+            if (covid19Test.equals("да")) {
+                return findAllCovid19TestingLabs();
+            } else return findAllNotCovid19Testing();
+        } else if (category!=null && city!=null && covid19Test==null) {
+            return medicinski_ustanoviRepository.findAll().stream()
+                    .filter(i -> i.getKategorija().equals(category) && i.getGrad().equals(city))
+                    .collect(Collectors.toList());
+        } else if (category!=null && city==null && covid19Test!=null) {
+            if (covid19Test.equals("да")) {
+                return findAllByCategory(category).stream()
+                        .filter(findAllCovid19TestingLabs()::contains)
+                        .distinct().collect(Collectors.toList());
+            } else {
+                return findAllByCategory(category).stream()
+                        .filter(findAllNotCovid19Testing()::contains)
+                        .distinct().collect(Collectors.toList());
+            }
+        } else if (category==null && city!=null && covid19Test!=null) {
+            if (covid19Test.equals("да")) {
+                return findAllByCity(city).stream()
+                        .filter(findAllCovid19TestingLabs()::contains)
+                        .distinct().collect(Collectors.toList());
+            } else {
+                return findAllByCity(city).stream()
+                        .filter(findAllNotCovid19Testing()::contains)
+                        .distinct().collect(Collectors.toList());
+            }
+        } else if (category!=null && city!=null && covid19Test!=null) {
+            if (covid19Test.equals("да")) {
+                return findAllByCity(city).stream()
+                        .filter(findAllCovid19TestingLabs()::contains)
+                        .filter(findAllByCategory(category)::contains)
+                        .distinct().collect(Collectors.toList());
+            } else {
+                return findAllByCity(city).stream()
+                        .filter(findAllNotCovid19Testing()::contains)
+                        .filter(findAllByCategory(category)::contains)
+                        .distinct().collect(Collectors.toList());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getAllCities() {
+        return medicinski_ustanoviRepository.getAllCities();
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        return medicinski_ustanoviRepository.getAllCategories();
+    }
 }

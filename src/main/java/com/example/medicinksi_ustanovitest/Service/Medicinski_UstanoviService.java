@@ -23,4 +23,9 @@ public interface Medicinski_UstanoviService {
 
     List<Medicinska_Ustanova> findAllNotCovid19Testing();
 
+    List<Medicinska_Ustanova> getMedicalLabsByFilter(String category, String city, String covid19Test);
+
+    List<String> getAllCities();
+
+    List<String> getAllCategories();
 }

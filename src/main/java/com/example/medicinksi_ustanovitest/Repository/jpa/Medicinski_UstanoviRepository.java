@@ -25,7 +25,13 @@ public interface Medicinski_UstanoviRepository extends JpaRepository<Medicinska_
     @Query("select count(a) from Medicinska_Ustanova a where a.Medicinska_ustanova_ID in ( select Min(b.Medicinska_ustanova_ID) from Medicinska_Ustanova  b group by  b.Naziv) and (a.Covid19_PCR_test = true or a.Brz_antigenski_test = true or a.Imuno_test=true)")
     Integer countcovid19();
 
+    //zemi gi site kategorii
+    @Query("select distinct(a.Kategorija) from Medicinska_Ustanova a")
+    List<String> getAllCategories();
 
+    //zemi gi site gradovi vo koi ima medicinski ustanovi
+    @Query("select distinct(a.Grad) from Medicinska_Ustanova a")
+    List<String> getAllCities();
 
 
 
