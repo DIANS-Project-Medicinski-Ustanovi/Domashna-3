@@ -6,6 +6,7 @@ import com.example.medicinksi_ustanovitest.Service.Medicinski_UstanoviService;
 import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -133,5 +134,17 @@ public class Medicinski_UstanoviServiceImpl implements Medicinski_UstanoviServic
     @Override
     public List<String> getAllCategories() {
         return medicinski_ustanoviRepository.getAllCategories();
+    }
+
+    public List<Medicinska_Ustanova> testList(){
+        List<Medicinska_Ustanova> temp = findAllMedicinskiUstanovi();
+        List<Medicinska_Ustanova> medicinski = new ArrayList<>();
+        for (Medicinska_Ustanova med : temp){
+            Medicinska_Ustanova medicinska_ustanova = new Medicinska_Ustanova(med.getNaziv(), med.getGrad(), med.getKategorija(),
+                    med.getImuno_test(), med.getBrz_antigenski_test(), med.getCovid19_PCR_test(),
+                    med.getLatitude(), med.getLongitude());
+            medicinski.add(medicinska_ustanova);
+        }
+        return medicinski;
     }
 }

@@ -28,4 +28,6 @@ public interface Medicinski_UstanoviService {
     List<String> getAllCities();
 
     List<String> getAllCategories();
+
+    public List<Medicinska_Ustanova> testList();
 }

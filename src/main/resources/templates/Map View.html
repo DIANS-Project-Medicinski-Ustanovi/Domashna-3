@@ -220,10 +220,10 @@
                 </div>
                 <!--                Map END-->
 
-            <ul   th:each="med:${AllCovid19TestingLabs}">
-               <li class="test" th:text="${med.getLongitude()}"></li>
+            <ul style="display: none" th:each="med:${AllCovid19TestingLabs}">
+               <li  class="test" th:text="${med.getLongitude()}"></li>
             </ul>
-                <ul  th:each="med:${AllCovid19TestingLabs}">
+                <ul style="display: none"  th:each="med:${AllCovid19TestingLabs}">
                     <li class="test_lat" th:text="${med.getLatitude()}"></li>
                 </ul>
             </div>
@@ -262,6 +262,7 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
+
 </body>
 
 
@@ -295,26 +296,63 @@ layer1.addTo(map);  //default layer
 
 
 
+
 </script>
 <script type="text/javascript">
-    var list_long;
-    var list_lat;
-    console.log(document.getElementsByClassName('test').length);
-    for (var i=1; i<document.getElementsByClassName('test').length; i++) {
-        list_long= list_long+','+ (document.getElementsByClassName('test').item(i).innerHTML)
-        list_lat= list_lat+','+ (document.getElementsByClassName('test_lat').item(i).innerHTML)
-    }
+    // var list_long;
+    // var list_lat;
+    // // console.log(document.getElementsByClassName('test').length);
+    // for (var i=1; i<document.getElementsByClassName('test').length; i++) {
+    //     list_long= list_long+','+ (document.getElementsByClassName('test').item(i).innerHTML)
+    //     list_lat= list_lat+','+ (document.getElementsByClassName('test_lat').item(i).innerHTML)
+    // }
+    //
+    //
+    // const temp_long = list_long.split(',');
+    // const temp_lat = list_lat.split(',');
+    //
+    // for (var i = 1; i < temp_long.length; i++) {
+    //
+    //
+    //     marker = L.marker([temp_lat[i], temp_long[i]]).addTo(map);
+    // }
 
-    const temp_long = list_long.split(',');
-    const temp_lat = list_lat.split(',');
-
-    for (var i = 1; i < temp_long.length; i++) {
-
-        console.log(temp_long[i]+ ' '+ temp_lat[i]);
-        marker = L.marker([temp_lat[i], temp_long[i]]).addTo(map);
-    }
 
     // console.log(list)
+
+    var list_asd = "[[${medicinski}]]";
+    // console.log(typeof list_asd);
+    // console.log(list_asd);
+    // console.log(list_asd.length);
+    var medical_labss;
+    medical_labss = list_asd.split("Medicinska_Ustanova(");
+    // console.log(medical_labss);
+    // console.log(typeof medical_labss);
+    // console.log(medical_labss);
+    console.log(medical_labss.length);
+    var lats=[];
+    var longts;
+    // var testest = medical_labss.toString().split(",");
+
+    for (var i=1; i<medical_labss.length; i++) {
+        longts =longts +' |||||'+ medical_labss[i].split(",")
+    }
+
+
+    console.log(longts);
+
+
+
+
+
+    // console.log(lats);
+    // console.log(typeof lats);
+    // console.log( lats.length);
+    // console.log(medical_labss);
+    // console.log(longts);
+    // console.log(lats);
+
+
 </script>
 
 <!-- JS for map design and funct. END-->
