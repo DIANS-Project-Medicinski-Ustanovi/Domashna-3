@@ -6,10 +6,7 @@ import com.example.medicinksi_ustanovitest.Service.Medicinski_UstanoviService;
 import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,8 +84,8 @@ public class Medicinski_UstanoviServiceImpl implements Medicinski_UstanoviServic
                 return findAllCovid19TestingLabs();
             } else return findAllNotCovid19Testing();
         } else if (category!=null && city!=null && covid19Test==null) {
-            return medicinski_ustanoviRepository.findAll().stream()
-                    .filter(i -> i.getKategorija().equals(category) && i.getGrad().equals(city))
+            return findAllByCity(city).stream()
+                    .filter(i -> i.getKategorija().toLowerCase().equals(category.toLowerCase()))
                     .collect(Collectors.toList());
         } else if (category!=null && city==null && covid19Test!=null) {
             if (covid19Test.equals("да")) {
@@ -136,15 +133,12 @@ public class Medicinski_UstanoviServiceImpl implements Medicinski_UstanoviServic
         return medicinski_ustanoviRepository.getAllCategories();
     }
 
-    public List<Medicinska_Ustanova> testList(){
-        List<Medicinska_Ustanova> temp = findAllMedicinskiUstanovi();
-        List<Medicinska_Ustanova> medicinski = new ArrayList<>();
-        for (Medicinska_Ustanova med : temp){
-            Medicinska_Ustanova medicinska_ustanova = new Medicinska_Ustanova(med.getNaziv(), med.getGrad(), med.getKategorija(),
-                    med.getImuno_test(), med.getBrz_antigenski_test(), med.getCovid19_PCR_test(),
-                    med.getLatitude(), med.getLongitude());
-            medicinski.add(medicinska_ustanova);
-        }
-        return medicinski;
+    public HashMap<Integer, Medicinska_Ustanova> FilterdMedUstanovi(String category, String city, String covid19Test){
+
+        HashMap<Integer, Medicinska_Ustanova> hashMap = new HashMap<>();
+        getMedicalLabsByFilter(category, city, covid19Test).stream().forEach(i -> hashMap.put(i.getMedicinska_ustanova_ID(), i));
+        return hashMap;
+
     }
+
 }

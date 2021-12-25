@@ -2,6 +2,7 @@ package com.example.medicinksi_ustanovitest.Service;
 
 import com.example.medicinksi_ustanovitest.Model.Medicinska_Ustanova;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +30,6 @@ public interface Medicinski_UstanoviService {
 
     List<String> getAllCategories();
 
-    public List<Medicinska_Ustanova> testList();
+    public HashMap<Integer, Medicinska_Ustanova> FilterdMedUstanovi(String category, String city, String covid19Test);
+
 }

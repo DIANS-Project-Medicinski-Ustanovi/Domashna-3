@@ -28,13 +28,9 @@ public class MapController {
     @GetMapping
     public String getMapPage(Model model) {
 
-        model.addAttribute("AllCovid19TestingLabs", medicinski_ustanoviService.findAllCovid19TestingLabs());
-        model.addAttribute("AllMedicalLabs", medicinski_ustanoviService.findAllMedicinskiUstanovi());
-        model.addAttribute("AllNotCovid19TestingLabs", medicinski_ustanoviService.findAllNotCovid19Testing());
         model.addAttribute("allCities", medicinski_ustanoviService.getAllCities());
         model.addAttribute("allCategories", medicinski_ustanoviService.getAllCategories());
-        model.addAttribute("medicinski", medicinski_ustanoviService.testList());
-
+        model.addAttribute("medicinski", medicinski_ustanoviService.FilterdMedUstanovi(null,null,null));
         return "Map View";
     }
 
@@ -44,16 +40,13 @@ public class MapController {
         String category = req.getParameter("category");
         String city = req.getParameter("city");
         String covidTest = req.getParameter("covidTest");
-
-        model.addAttribute("MedicalLabsByAllFilters",
-                medicinski_ustanoviService.getMedicalLabsByFilter(category,city,covidTest));
-        model.addAttribute("AllCovid19TestingLabs", medicinski_ustanoviService.findAllCovid19TestingLabs());
-        model.addAttribute("AllMedicalLabs", medicinski_ustanoviService.findAllMedicinskiUstanovi());
-        model.addAttribute("AllNotCovid19TestingLabs", medicinski_ustanoviService.findAllNotCovid19Testing());
+        req.setAttribute("category", category);
+        req.setAttribute("city", city);
+        req.setAttribute("covidTest", covidTest);
+        req.setAttribute("sizeList", medicinski_ustanoviService.FilterdMedUstanovi(category, city, covidTest).size());
         model.addAttribute("allCities", medicinski_ustanoviService.getAllCities());
         model.addAttribute("allCategories", medicinski_ustanoviService.getAllCategories());
-        model.addAttribute("filteredList", (medicinski_ustanoviService.getMedicalLabsByFilter(category, city, covidTest)));
-        model.addAttribute("medicinski", medicinski_ustanoviService.testList());
+        model.addAttribute("medicinski", medicinski_ustanoviService.FilterdMedUstanovi(category, city, covidTest));
 
         return "Map View";
     }
