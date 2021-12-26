@@ -32,9 +32,10 @@
             margin: 4px 2px;
             cursor: pointer;
             transition: transform .64s;
+            border-radius: 4px;
         }
 
-        .button:hover {
+        #back:hover {
             background-color: rgb(78, 115, 223);
             transform: scale(1.5);
             font-size: 109%;
@@ -17595,16 +17596,107 @@
         }
     </script>
     <style>
-        #map {
-            /*transition: transform .3s;*/
-            border: 4px solid rgba(78, 115, 223, 0.7);
+
+
+        input{
+            background-color: rgba(78, 115, 223, .8);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input:hover {
+            background-color: rgb(78, 115, 223);
+
         }
 
-        /*#map:hover {*/
-        /*    margin-top: 4px;*/
-        /*    transform: scale(1.042);*/
-        /*    border: 4px solid rgb(78, 115, 223) ;*/
-        /*}*/
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            appearance: none;
+            background: transparent;
+            font-size: 25px;
+            border: none;
+            margin-left: 20px;
+            text-align: left;
+            font-size: 25px;
+        }
+
+        .select {
+            display: inline-block;
+            width: 20em;
+            height: 3.3em;
+            background: transparent;
+            border-radius: 10px;
+            text-align: left;
+            border: none;
+        }
+
+        select {
+            margin-top: 30px;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            color: rgba(78,115,223, 0.8);
+            font-size: 19px;
+            cursor: pointer;
+            padding: 5px;
+            border: none;
+        }
+        select::after{
+            font-size: 26px;
+        }
+
+        select::-ms-expand {
+            display: none;
+        }
+
+        .select::after {
+            top: 2px;
+            right: 0;
+            bottom: 0;
+            padding: 0 1em;
+            pointer-events: none;
+            background-color: transparent;
+
+            font-size: 26px;
+        }
+        .select:hover{
+            border: 3px solid rgb(78,115,223) ;
+        }
+
+        .select:hover::after {
+            color: lightgray;
+            background-color: whitesmoke;
+            border: none;
+            font-size: 26px;
+        }
+
+        /*<!-- For different browsers --> */
+        .select::after {
+            -webkit-transition: .25s all ease;
+            -o-transition: .25s all ease;
+            transition: .25s all ease;
+        }
+
+        input[type=text] {
+            width: 70%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: none;
+            background-color: rgb(78, 115, 223);
+            color: white;
+        }
+
+        #map {
+            border: 4px solid rgba(78, 115, 223, 0.7);
+        }
 
         img {
             transition: transform .3s;
@@ -17625,6 +17717,10 @@
         td {
             background-color: whitesmoke;
             color: #3b5998;
+        }
+        ::placeholder{
+            color: rgba(255,255,255,0.7);
+
         }
     </style>
     </head>
@@ -17724,7 +17820,7 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
 
-                <button class="button" style="margin-bottom: -20px; margin-top: -9px" onclick="history.back()">&#xab; Назад
+                <button class="button" id="back" style="margin-bottom: -20px; margin-top: -9px" onclick="location.href='http://localhost:9090/map';">&#xab; Назад
                 </button>
 
                 <span style="text-align: center">
@@ -17890,23 +17986,29 @@
                 <br>
                 <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
                 <br>
-                <form th:method="POST" th:action="@{/MedicalLAB/{id}/test (id=${DetailedViewLab.get().getMedicinska_ustanova_ID()})}" >
-                    <input type="text" name="adresa" th:value="${adresa}">
+
+                <!--                DETAILS LOCATION USER-->
+                <form th:method="POST" th:action="@{/MedicalLAB/{id} (id=${DetailedViewLab.get().getMedicinska_ustanova_ID()})}" style="border: 1px solid lightgray">
+
+                    <input type="text" name="adresa" th:value="${adresa}" spellcheck="false"
+                           placeholder="Внеси ја овде твојата адреса во следниот формат: улица број град поштенски број ">
+                    <button id="geoLocation" class="button" style="background-color: steelblue" onclick="showPosition()"> Земи ја твојата моментална локација </button>
+
+                    <button id="genereteAddresses" class="button" >Прикажи постоечки адреси</button>
+                    <br>
+                    <br>
 
 
-
-<br>
-                <!--                DETAILS LOCATION START-->
-                <select id="infoList" >
-                <option selected disabled hidden>
-                    Одбери почетна локација...
-                </option>
-                </select>
-
-                    <button id="submitAddress">Пребарај</button>
+                    <select id="infoList" name="izbranaAdresa">
+                        <option selected disabled hidden>
+                            Одбери понудена почетна локација...
+                        </option>
+                    </select>
+                    <br>
+                    <button id="submitAddress" class="button">Прикажи рута</button>
 
                 </form>
-                <!--                DETAILS LOCATION END-->
+                <!--                DETAILS LOCATION USER-->
 
                 <br>
                 <br>
@@ -17915,6 +18017,8 @@
 
                 </div>
 <!--                Map END-->
+                <span id="latitude"> </span>
+                <span id="longitude"> </span>
 
             </div>
             <!-- End of Main Content -->
@@ -17948,7 +18052,22 @@
 
 <!-- JS for map design and funct.-->
 <script>
+
+    // Stay on same scroll position
+    $(window).scroll(function () {
+        sessionStorage.scrollTop = $(this).scrollTop();
+    });
+    $(document).ready(function () {
+        if (sessionStorage.scrollTop != "undefined") {
+            $(window).scrollTop(sessionStorage.scrollTop);
+        }
+    });
+    // Stay on same scroll position END
+
     var marker;
+    var marker_user;
+    var user_lat = '[[${user_lat}]]';
+    var user_lng = '[[${user_lng}]]';
     var layer;
     var latitude = [[${DetailedViewLab.get().getLatitude()}]];
     var longitude = [[${DetailedViewLab.get().getLongitude()}]];
@@ -17958,9 +18077,55 @@
     var kontakt = '[[${DetailedViewLab.get().getTel_broj()}]]';
     var markersLayer = new L.LayerGroup();
 
-     const map = L.map('map', {
+
+    // Zemanje lokacija na user
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
+        }
+    }
+
+    var test;
+    var test1;
+
+    function showPosition(position) {
+        document.getElementById("latitude").innerHTML = position.coords.latitude;
+        document.getElementById("longitude").innerHTML = position.coords.longitude;
+        test = parseFloat(document.getElementById("latitude").innerHTML);
+        test1 = parseFloat(document.getElementById("longitude").innerHTML);
+    }
+
+    function showError(error) {
+        if (error.PERMISSION_DENIED) {
+            document.getElementById("lat").innerHTML = "The User have denied the request for Geolocation.";
+        }
+
+
+    }
+
+    getLocation();
+
+    console.log(test);
+    console.log(test1);
+    // Zemanje lokacija na user END
+
+
+    //get user location with geolocation
+    function showPosition() {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            user_lat = position.coords.latitude;
+            user_lng = position.coords.longitude;
+
+        });
+    }
+    console.log(user_lat + ' ' + user_lng);
+    //get user location with geolocation END
+
+    const map = L.map('map', {
         gestureHandling: true // use ctrl+scroll to zoom on map
-    }).setView([42.006510, 21.421958], 13);
+    }).setView([41.606510, 21.221958], 9);
 
 
    layer1 =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -17988,6 +18153,11 @@
         popupAnchor:  [9, -51] // point from which the popup should open relative to the iconAnchor
     });
 
+    if(user_lat!=null && user_lng!=null) {
+        marker_user = L.marker([user_lat, user_lng]).addTo(map)
+            .bindPopup('<h5> Твојата локација </h5>')
+    }
+
     marker = L.marker([latitude, longitude],{
         icon: MedIcon
     }).addTo(map)
@@ -18005,15 +18175,15 @@
 
 <script>
     var adresaInput = '[[${adresa}]]' ;
-    var izbranaAdresa = '[[${izbranaAdresa}]]' ;
-
-
+    var izbranaAdresa = '[[${izbranaAdresa}]]';
+    var user_lat = '[[${user_lat}]]';
+    var user_lng = '[[${user_lng}]]';
 
         var ulica=adresaInput.split(" ")[0];
         var broj=adresaInput.split(" ")[1]
         var grad =adresaInput.split(" ")[2]
         var postcode=adresaInput.split(" ")[3]
-        console.log("AJAX");
+
         $.ajax({
 
             method: "GET",
@@ -18041,11 +18211,6 @@
             }
         });
 
-
-
-// console.log(user_lat+' '+user_lng);
-    console.log(izbranaAdresa);
-    console.log(adresaInput);
 </script>
 
 

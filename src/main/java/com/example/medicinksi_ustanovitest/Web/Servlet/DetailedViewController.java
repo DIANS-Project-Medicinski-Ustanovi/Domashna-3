@@ -31,48 +31,28 @@ public class DetailedViewController {
         return "Detailed View LAB";
     }
 
-    @PostMapping("/test")
+    @PostMapping
     public String postDetailedView(Model model, @PathVariable int id, HttpServletResponse resp,
                                    HttpServletRequest req) {
-        HttpSession httpSession = req.getSession();
 
-        String adresa = req.getParameter("adresa");
-        httpSession.setAttribute("adresa", adresa);
+        String adresa = req.getParameter("adresa");   //vnesen input adresa od korisnik
+        req.setAttribute("adresa", adresa);
+        model.addAttribute("adresa", req.getAttribute("adresa"));
 
-        String izbranaAdresa = req.getParameter("izbranaAdresa");
-        if (izbranaAdresa==null){
-            izbranaAdresa="TEST IZBRANA ADRESA";
-            model.addAttribute("izbranaAdresa", izbranaAdresa);
+        String izbranaAdresa = req.getParameter("izbranaAdresa"); // izbrana adresa vo select
+        req.setAttribute("izbranaAdresa", izbranaAdresa);
+        model.addAttribute("izbranaAdresa", req.getAttribute("izbranaAdresa"));
+
+        if(izbranaAdresa!=null) {
+            String lat_adresa = izbranaAdresa.split("lat:")[1].split(",")[0].trim();
+            String lng_adresa = izbranaAdresa.split("lng:")[1].trim();
+            model.addAttribute("user_lat", lat_adresa);
+            model.addAttribute("user_lng", lng_adresa);
         }
-        else {
-            model.addAttribute("izbranaAdresa", izbranaAdresa);
-        }
-        httpSession.setAttribute("izbranaAdresaSesija",izbranaAdresa );
-        model.addAttribute("izbranaAdresa1",httpSession.getAttribute("izbranaAdresaSesija"));
-
-        model.addAttribute("adresa", httpSession.getAttribute("adresa"));
 
         model.addAttribute("DetailedViewLab", medicinski_ustanoviService.findById(id));
 
         return "Detailed View LAB";
     }
-
-//    @PostMapping("/route")
-//    public String postRouteDetailedView(Model model, @PathVariable int id, HttpServletResponse resp,
-//                                        HttpServletRequest req) {
-//        HttpSession httpSession = req.getSession();
-//        model.addAttribute("DetailedViewLab", medicinski_ustanoviService.findById(id));
-//        String izbranaAdresa = req.getParameter("izbranaAdresa");
-//        httpSession.setAttribute("izbranaAdresaSesija",izbranaAdresa );
-//
-//        model.addAttribute("izbranaAdresa1",httpSession.getAttribute("izbranaAdresaSesija"));
-////        Double lat_adresa = Double.parseDouble(izbranaAdresa.split(",")[5].split(" ")[1]);
-////        Double lng_adresa = Double.parseDouble(izbranaAdresa.split(",")[6].split(" ")[1]);
-////        model.addAttribute("lat_adresa", lat_adresa);
-////        model.addAttribute("lng_adresa", lng_adresa);
-//
-//        return "Detailed View LAB";
-//    }
-
 
 }
