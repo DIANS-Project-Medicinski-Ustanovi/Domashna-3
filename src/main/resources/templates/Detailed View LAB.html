@@ -17685,7 +17685,7 @@
         }
 
         input[type=text] {
-            width: 70%;
+            width: 75%;
             padding: 12px 20px;
             margin: 8px 0;
             box-sizing: border-box;
@@ -17720,7 +17720,7 @@
         }
         ::placeholder{
             color: rgba(255,255,255,0.7);
-
+            font-style: italic;
         }
     </style>
     </head>
@@ -17988,7 +17988,7 @@
                 <br>
 
                 <!--                DETAILS LOCATION USER-->
-                <form th:method="POST" th:action="@{/MedicalLAB/{id} (id=${DetailedViewLab.get().getMedicinska_ustanova_ID()})}" style="border: 1px solid lightgray">
+                <form th:method="POST" th:action="@{/MedicalLAB/{id} (id=${DetailedViewLab.get().getMedicinska_ustanova_ID()})}" style="border: 2px solid lightgray">
 
                     <input type="text" name="adresa" th:value="${adresa}" spellcheck="false"
                            placeholder="Внеси ја овде твојата адреса во следниот формат: улица број град поштенски број ">
@@ -18004,23 +18004,30 @@
                         </option>
                     </select>
                     <br>
+                    <br>
                     <button id="submitAddress" class="button">Прикажи рута</button>
 
                 </form>
 
-                <button id="geoLocation" class="button" style="background-color: steelblue" > Земи ја твојата моментална локација </button>
+                <br>
+
+                <div style="border: 2px solid lightgray">
+                <button id="geoLocation" class="button" style="background-color: steelblue" >
+                    Земи ја твојата моментална локација
+                </button>
+                </div>
 
                 <!--                DETAILS LOCATION USER-->
 
                 <br>
                 <br>
                 <br>
-                <div id="map" style="width: 100%; height: 600px">
+                <div id="map" style="width: 100%; height: 800px">
 
                 </div>
 <!--                Map END-->
-                <div id="latitude"> </div>
-                <div id="longitude"> </div>
+                <div id="latitude" style="display: none"> </div>
+                <div id="longitude" style="display: none"> </div>
 
             </div>
             <!-- End of Main Content -->
@@ -18066,6 +18073,8 @@
     });
     // Stay on same scroll position END
 
+
+       // layer group for all markers
     var marker;
     var marker_user;
     var user_lat = '[[${user_lat}]]';
@@ -18077,15 +18086,12 @@
     var adresa = '[[${DetailedViewLab.get().getAdresa()}]]';
     var kategroija = '[[${DetailedViewLab.get().getKategorija()}]]';
     var kontakt = '[[${DetailedViewLab.get().getTel_broj()}]]';
-    var markersLayer = new L.LayerGroup();
-    var test;
-    var test1;
-
 
     const map = L.map('map', {
         gestureHandling: true // use ctrl+scroll to zoom on map
     }).setView([41.606510, 21.221958], 9);
 
+    var layerGroup = L.layerGroup().addTo(map);
 
    layer1 =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -18113,10 +18119,17 @@
     });
 
     if(user_lat!=null && user_lng!=null) {
-        marker_user = L.marker([user_lat, user_lng]).addTo(map)
+
+        // clear markers in layer Group
+        layerGroup.clearLayers();
+
+        marker_user = L.marker([user_lat, user_lng]).addTo(layerGroup)
             .bindPopup('<h5> Твојата локација </h5>')
+
+
     }
 
+    // marker za medicinskata ustanova na mapa
     marker = L.marker([latitude, longitude],{
         icon: MedIcon
     }).addTo(map)
@@ -18129,10 +18142,6 @@
     layer1.addTo(map);  //default layer
 
 
-
-<!-- JS for map design and funct. END-->
-
-
     var adresaInput = '[[${adresa}]]' ;
     var izbranaAdresa = '[[${izbranaAdresa}]]';
 
@@ -18143,7 +18152,7 @@
         var postcode=adresaInput.split(" ")[3]
 
 
-    // Zemanje lokacija na user
+    // Zemanje lokacija na user preku geolocation
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -18152,22 +18161,22 @@
         }
     }
 
-
-
     function showPosition(position) {
         document.getElementById("latitude").innerHTML = position.coords.latitude;
         document.getElementById("longitude").innerHTML = position.coords.longitude;
         user_lat = parseFloat(document.getElementById("latitude").innerHTML);
         user_lng = parseFloat(document.getElementById("longitude").innerHTML);
-        L.marker([user_lat, user_lng]).addTo(map);
 
+        layerGroup.clearLayers();
+        L.marker([user_lat, user_lng]).addTo(layerGroup)
+                      .bindPopup('<h5> Твојата локација </h5>');
     }
 
     $(document).on("click", "#geoLocation", function () {
         getLocation();
     });
 
-    // Zemanje lokacija na user END
+    // Zemanje lokacija na user preku geolocation END
 
         $.ajax({
 
@@ -18175,10 +18184,7 @@
             url: "http://www.mapquestapi.com/geocoding/v1/address?key=lxFGmDwoY5MYGAFEBA5hXyvT0SIFGvff&location="+ulica+"%20"+broj+","+grad+",%20"+postcode+",%20North%20Macedonia",
             success: function(data) {
                 $.each(data.results[0].locations, function (i, item) {
-                    // console.log(item.street);
-                    // console.log(item.adminArea5);
-                    // console.log(item.adminArea1);
-                    // console.log(item.displayLatLng.lat+' '+item.displayLatLng.lng);
+
                     var list_item = $("<option name='izbranaAdresa'></option>");
 
                     list_item.append("Држава: ",item.adminArea1);
@@ -18197,6 +18203,8 @@
         });
 
 </script>
+
+<!-- JS for map design and funct. END-->
 
 
 </html>

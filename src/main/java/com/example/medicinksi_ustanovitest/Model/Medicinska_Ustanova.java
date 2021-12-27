@@ -24,27 +24,4 @@ public class Medicinska_Ustanova {
     private Double Latitude, Longitude;
     private String Zabeleshki;
 
-    public Medicinska_Ustanova(String naziv, String kategorija, String grad,
-     Boolean covid19_PCR_test, Boolean brz_antigenski_test,
-          Boolean imuno_test, Double latitude, Double longitude) {
-        Naziv = naziv;
-        Kategorija = kategorija;
-        Grad = grad;
-        Covid19_PCR_test = covid19_PCR_test;
-        Brz_antigenski_test = brz_antigenski_test;
-        Imuno_test = imuno_test;
-        Latitude = latitude;
-        Longitude=longitude;
-    }
-
-    public Medicinska_Ustanova() {
-    }
-
-//    public Double getLongitude() {
-//        return Double.parseDouble(Longitude);
-//    }
-//
-//    public Double getLatitude() {
-//        return Double.parseDouble(Latitude);
-//    }
 }
