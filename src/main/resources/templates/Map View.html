@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
-
 <head>
 
     <meta charset="utf-8">
@@ -35,6 +33,7 @@
             document.body.style.zoom = "75%"
         }
     </script>
+
     <style>
 
         .button {
@@ -138,10 +137,10 @@
 
         /*<!-- For different browsers --> */
         .select::after {
-                                            -webkit-transition: .25s all ease;
-                                            -o-transition: .25s all ease;
-                                            transition: .25s all ease;
-                                        }
+            -webkit-transition: .25s all ease;
+            -o-transition: .25s all ease;
+            transition: .25s all ease;
+        }
     </style>
 
 </head>
@@ -282,13 +281,12 @@
             <div class="container-fluid" style="height: 1000px">
 
                 <!-- Page Heading -->
+
+                <!--                Filter med lab  -->
                 <h1 class="h3 mb-4 text-gray-800">Пронајди ја твојата лабораторија</h1>
                 <div>
 
                         <form th:method="POST" th:action="@{/map}">
-
-
-
                             <span class="select" style="margin-left: 80px">
                             <select name="city">
                                 <option selected disabled hidden >Одбери град: </option>
@@ -317,8 +315,8 @@
 
                         </form>
                     <br>
-
                 </div>
+                <!--                Filter med lab  END -->
 
 
 
@@ -328,10 +326,10 @@
                 <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
                 <br>
                 <h4 style="display: inline-block"> Филтрирано според:  </h4>
-                <span> град: </span> <span style="display: inline-block; font-weight: bold; font-size: 19px" th:text="${city} ?: 'СИТЕ'"></span>
-                <span>, категорија: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${category} ?: 'СИТЕ'"></span>
-                <span>, ковид-19 тестирање: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${covidTest} ?: 'СИТЕ'"></span>
-                <span>, пронајдени: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${sizeList} ?: '202'"></span>
+                <span> град: </span> <span style="display: inline-block; font-weight: bold; font-size: 19px" th:text="${city} ?: 'СИТЕ'"></span>   <!-- Raboti odlicno -->
+                <span>, категорија: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${category} ?: 'СИТЕ'"></span> <!-- Raboti odlicno -->
+                <span>, ковид-19 тестирање: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${covidTest} ?: 'СИТЕ'"></span> <!-- Raboti odlicno -->
+                <span>, пронајдени: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${sizeList} ?: '202'"></span> <!-- Raboti odlicno -->
 
                 <button id="geoLocation" class="button" style="float: right; margin-top: -26px" >
                     Прикажи најблиски медицински установи
@@ -340,16 +338,16 @@
                 <div id="map" style="width: 100%; height: 750px">
 
                 </div>
-                <!--                Map END-->
+                <!--              Location on map END-->
 
                 <div id="latitude" style="display: none"> </div>
                 <div id="longitude" style="display: none"> </div>
 
-                <!--                Data for map loaction - marker -->
 
-            <ul style="display: none" th:each="med:${medicinski}">
-               <li  class="test" th:text="${med.getValue().getLongitude()}"></li>
-            </ul>
+                <!--                Data for map loaction - marker -->
+                <ul style="display: none" th:each="med:${medicinski}">
+                   <li  class="test" th:text="${med.getValue().getLongitude()}"></li>
+                </ul>
                 <ul style="display: none"  th:each="med:${medicinski}">
                     <li class="test_lat" th:text="${med.getValue().getLatitude()}"></li> <!-- dobro raboti !!! -->
                 </ul>
@@ -362,8 +360,9 @@
                 <ul style="display: none"  th:each="med:${medicinski}">
                     <li class="Med-id" th:text="${med.getValue().getMedicinska_ustanova_ID()}"></li>
                 </ul>
-
                 <!--                Data for map loaction - marker END-->
+
+
             </div>
 
         </div>
@@ -399,11 +398,7 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
-
 </body>
-
-
-
 
 <!-- JS for map design and funct.-->
 <script>
@@ -412,6 +407,7 @@
         gestureHandling: true
     }).setView([41.606510, 21.221958], 9);
 
+    // razlicni izgledi na mapata
     layer1 =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -431,6 +427,7 @@
     L.control.layers(allOptions).addTo(map);
 
     layer1.addTo(map);  //default layer
+    // razlicni izgledi na mapata
 
         var list_long;
         var list_lat;
@@ -453,7 +450,7 @@
         const temp_kat = kat.split(',');
 
         for (var i = 1; i < temp_long.length; i++) {
-            var link_detailedView = "http://localhost:9090/MedicalLAB/" + temp_med_id[i];
+            var link_detailedView = "https://go-lab.herokuapp.com/MedicalLAB/" + temp_med_id[i];
             marker = L.marker([temp_lat[i], temp_long[i]]).addTo(map)
                 .bindPopup('<span style="text-align: center">' + '<hr>' +
                     '<h5> <b style="color: #3b5998">Име:</b> ' + temp_naziv[i] + '</h5>' +

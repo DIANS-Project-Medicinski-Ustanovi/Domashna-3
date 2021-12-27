@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(name = "Home controller", value = "/home")
+@RequestMapping(name = "Home controller", value = {"/home", ""})
 public class HomeController {
     private final Medicinski_UstanoviService medicinski_ustanoviService;
 
