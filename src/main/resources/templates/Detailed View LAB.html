@@ -17992,7 +17992,6 @@
 
                     <input type="text" name="adresa" th:value="${adresa}" spellcheck="false"
                            placeholder="Внеси ја овде твојата адреса во следниот формат: улица број град поштенски број ">
-                    <button id="geoLocation" class="button" style="background-color: steelblue" onclick="showPosition()"> Земи ја твојата моментална локација </button>
 
                     <button id="genereteAddresses" class="button" >Прикажи постоечки адреси</button>
                     <br>
@@ -18008,6 +18007,9 @@
                     <button id="submitAddress" class="button">Прикажи рута</button>
 
                 </form>
+
+                <button id="geoLocation" class="button" style="background-color: steelblue" > Земи ја твојата моментална локација </button>
+
                 <!--                DETAILS LOCATION USER-->
 
                 <br>
@@ -18017,8 +18019,8 @@
 
                 </div>
 <!--                Map END-->
-                <span id="latitude"> </span>
-                <span id="longitude"> </span>
+                <div id="latitude"> </div>
+                <div id="longitude"> </div>
 
             </div>
             <!-- End of Main Content -->
@@ -18076,52 +18078,9 @@
     var kategroija = '[[${DetailedViewLab.get().getKategorija()}]]';
     var kontakt = '[[${DetailedViewLab.get().getTel_broj()}]]';
     var markersLayer = new L.LayerGroup();
-
-
-    // Zemanje lokacija na user
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
-        }
-    }
-
     var test;
     var test1;
 
-    function showPosition(position) {
-        document.getElementById("latitude").innerHTML = position.coords.latitude;
-        document.getElementById("longitude").innerHTML = position.coords.longitude;
-        test = parseFloat(document.getElementById("latitude").innerHTML);
-        test1 = parseFloat(document.getElementById("longitude").innerHTML);
-    }
-
-    function showError(error) {
-        if (error.PERMISSION_DENIED) {
-            document.getElementById("lat").innerHTML = "The User have denied the request for Geolocation.";
-        }
-
-
-    }
-
-    getLocation();
-
-    console.log(test);
-    console.log(test1);
-    // Zemanje lokacija na user END
-
-
-    //get user location with geolocation
-    function showPosition() {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            user_lat = position.coords.latitude;
-            user_lng = position.coords.longitude;
-
-        });
-    }
-    console.log(user_lat + ' ' + user_lng);
-    //get user location with geolocation END
 
     const map = L.map('map', {
         gestureHandling: true // use ctrl+scroll to zoom on map
@@ -18169,20 +18128,46 @@
 
     layer1.addTo(map);  //default layer
 
-</script>
+
 
 <!-- JS for map design and funct. END-->
 
-<script>
+
     var adresaInput = '[[${adresa}]]' ;
     var izbranaAdresa = '[[${izbranaAdresa}]]';
-    var user_lat = '[[${user_lat}]]';
-    var user_lng = '[[${user_lng}]]';
+
 
         var ulica=adresaInput.split(" ")[0];
         var broj=adresaInput.split(" ")[1]
         var grad =adresaInput.split(" ")[2]
         var postcode=adresaInput.split(" ")[3]
+
+
+    // Zemanje lokacija na user
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
+        }
+    }
+
+
+
+    function showPosition(position) {
+        document.getElementById("latitude").innerHTML = position.coords.latitude;
+        document.getElementById("longitude").innerHTML = position.coords.longitude;
+        user_lat = parseFloat(document.getElementById("latitude").innerHTML);
+        user_lng = parseFloat(document.getElementById("longitude").innerHTML);
+        L.marker([user_lat, user_lng]).addTo(map);
+
+    }
+
+    $(document).on("click", "#geoLocation", function () {
+        getLocation();
+    });
+
+    // Zemanje lokacija na user END
 
         $.ajax({
 
