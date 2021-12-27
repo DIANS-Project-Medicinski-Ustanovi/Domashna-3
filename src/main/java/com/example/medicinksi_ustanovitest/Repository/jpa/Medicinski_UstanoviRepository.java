@@ -33,7 +33,4 @@ public interface Medicinski_UstanoviRepository extends JpaRepository<Medicinska_
     @Query("select distinct(a.Grad) from Medicinska_Ustanova a")
     List<String> getAllCities();
 
-
-
-
 }

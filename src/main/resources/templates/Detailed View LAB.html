@@ -17989,7 +17989,7 @@
 
                 <!--                DETAILS LOCATION USER-->
                 <form th:method="POST" th:action="@{/MedicalLAB/{id} (id=${DetailedViewLab.get().getMedicinska_ustanova_ID()})}" style="border: 2px solid lightgray">
-
+                    <h6 style="text-align: center"> Земи ја твојата локација преку внес на улица, град и поштенски број во следното поле - 1 начин</h6>
                     <input type="text" name="adresa" th:value="${adresa}" spellcheck="false"
                            placeholder="Внеси ја овде твојата адреса во следниот формат: улица број град поштенски број ">
 
@@ -18012,8 +18012,9 @@
                 <br>
 
                 <div style="border: 2px solid lightgray">
-                <button id="geoLocation" class="button" style="background-color: steelblue" >
-                    Земи ја твојата моментална локација
+                    <h6 style="text-align: center"> Земи ја твојата моментална локација со само еден клик на следното копче - 2 начин </h6>
+                <button id="geoLocation" class="button" style="background-color: rgb(78, 115, 223, 0.7)" >
+                    Прикажи локација
                 </button>
                 </div>
 

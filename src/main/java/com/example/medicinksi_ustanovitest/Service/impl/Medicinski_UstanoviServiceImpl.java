@@ -134,11 +134,9 @@ public class Medicinski_UstanoviServiceImpl implements Medicinski_UstanoviServic
     }
 
     public HashMap<Integer, Medicinska_Ustanova> FilterdMedUstanovi(String category, String city, String covid19Test){
-
         HashMap<Integer, Medicinska_Ustanova> hashMap = new HashMap<>();
         getMedicalLabsByFilter(category, city, covid19Test).stream().forEach(i -> hashMap.put(i.getMedicinska_ustanova_ID(), i));
         return hashMap;
-
     }
 
 }
