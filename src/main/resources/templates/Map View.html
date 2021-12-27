@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 
 <head>
 
@@ -8,6 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+
+    <!--    Style for map-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="//unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css"
+          type="text/css">
+    <script src="//unpkg.com/leaflet-gesture-handling"></script>
+    <!--    Style for map END-->
 
     <title>Find your Medical Lab</title>
     <link rel="shortcut icon" href="img/pulseTabIcon.svg">
@@ -21,12 +30,119 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
-    <script type="text/javascript">
+    <script>
         function zoom() {
             document.body.style.zoom = "75%"
         }
-
     </script>
+    <style>
+
+        .button {
+            background-color: rgba(78, 115, 223, .8);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: rgb(78, 115, 223);
+        }
+        .sidebar{
+            min-height: 135vh;
+        }
+
+
+        input{
+            background-color: rgba(78, 115, 223, .8);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input:hover {
+            background-color: rgb(78, 115, 223);
+
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            appearance: none;
+            background: transparent;
+            font-size: 25px;
+            border: none;
+            margin-left: 20px;
+            text-align: center;
+            font-size: 25px;
+        }
+
+        .select {
+            display: inline-block;
+            width: 20em;
+            height: 3.3em;
+            background: transparent;
+            border-radius: 10px;
+            text-align: left;
+            border: none;
+        }
+
+        select {
+            margin-top: 30px;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            color: rgba(78,115,223, 0.8);
+            font-size: 19px;
+            cursor: pointer;
+            padding: 5px;
+            border: none;
+        }
+        select::after{
+            font-size: 26px;
+        }
+
+        select::-ms-expand {
+            display: none;
+        }
+
+        .select::after {
+            top: 2px;
+            right: 0;
+            bottom: 0;
+            padding: 0 1em;
+            pointer-events: none;
+            background-color: transparent;
+
+            font-size: 26px;
+        }
+        .select:hover{
+            border: 3px solid rgb(78,115,223) ;
+        }
+
+        .select:hover::after {
+            color: lightgray;
+            background-color: whitesmoke;
+            border: none;
+            font-size: 26px;
+        }
+
+        /*<!-- For different browsers --> */
+        .select::after {
+                                            -webkit-transition: .25s all ease;
+                                            -o-transition: .25s all ease;
+                                            transition: .25s all ease;
+                                        }
+    </style>
 
 </head>
 
@@ -169,14 +285,86 @@
                 <h1 class="h3 mb-4 text-gray-800">Пронајди ја твојата лабораторија</h1>
                 <div>
 
-                    <iframe width="100%" height="800" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
-                            src="https://www.easymapmaker.com/map/84d065e679bf0fff016926d89930ee2c"/>
-                    </iframe>
+                        <form th:method="POST" th:action="@{/map}">
+
+
+
+                            <span class="select" style="margin-left: 80px">
+                            <select name="city">
+                                <option selected disabled hidden >Одбери град: </option>
+                                <option th:each="city : ${allCities}" th:value="${city}"
+                                        th:text="${city}" id="city" name="city"></option>
+                            </select>
+                            </span>
+
+                            <span class="select" style="margin-left: 80px">
+                            <select name="category">
+                                <option selected disabled hidden >Одбери категорија: </option>
+                                <option th:each="category : ${allCategories}" th:value="${category}"
+                                        th:text="${category}" id="category" name="category"></option>
+                            </select >
+                            </span>
+
+                            <span class="select" style="margin-left: 50px; margin-right: 30px">
+                            <select name="covidTest">
+                                <option selected disabled hidden>Одбери ковид-19 тестирање: </option>
+                                <option name="covidTest">да</option>
+                                <option name="covidTest">не</option>
+                            </select>
+                            </span>
+
+                            <input type="submit" value="Филтрирај" id="submitId" style="float: right"/>
+
+                        </form>
+                    <br>
 
                 </div>
 
+
+
+                <!--                Location on map-->
+                <hr class="sidebar-divider my-0">
+                <br>
+                <h3 style="font-weight: bold; color: #3b5998"> Локација: </h3>
+                <br>
+                <h4 style="display: inline-block"> Филтрирано според:  </h4>
+                <span> град: </span> <span style="display: inline-block; font-weight: bold; font-size: 19px" th:text="${city} ?: 'СИТЕ'"></span>
+                <span>, категорија: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${category} ?: 'СИТЕ'"></span>
+                <span>, ковид-19 тестирање: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${covidTest} ?: 'СИТЕ'"></span>
+                <span>, пронајдени: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${sizeList} ?: '202'"></span>
+
+                <button id="geoLocation" class="button" style="float: right; margin-top: -26px" >
+                    Прикажи најблиски медицински установи
+                </button>
+
+                <div id="map" style="width: 100%; height: 750px">
+
+                </div>
+                <!--                Map END-->
+
+                <div id="latitude" style="display: none"> </div>
+                <div id="longitude" style="display: none"> </div>
+
+                <!--                Data for map loaction - marker -->
+
+            <ul style="display: none" th:each="med:${medicinski}">
+               <li  class="test" th:text="${med.getValue().getLongitude()}"></li>
+            </ul>
+                <ul style="display: none"  th:each="med:${medicinski}">
+                    <li class="test_lat" th:text="${med.getValue().getLatitude()}"></li> <!-- dobro raboti !!! -->
+                </ul>
+                <ul style="display: none"  th:each="med:${medicinski}">
+                    <li class="ime" th:text="${med.getValue().getNaziv()}"></li>
+                </ul>
+                <ul style="display: none"  th:each="med:${medicinski}">
+                    <li class="kat" th:text="${med.getValue().getKategorija()}"></li>
+                </ul>
+                <ul style="display: none"  th:each="med:${medicinski}">
+                    <li class="Med-id" th:text="${med.getValue().getMedicinska_ustanova_ID()}"></li>
+                </ul>
+
+                <!--                Data for map loaction - marker END-->
             </div>
-            <!-- /.container-fluid -->
 
         </div>
         <!-- End of Main Content -->
@@ -211,6 +399,119 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
+
 </body>
+
+
+
+
+<!-- JS for map design and funct.-->
+<script>
+
+    const map = L.map('map', {
+        gestureHandling: true
+    }).setView([41.606510, 21.221958], 9);
+
+    layer1 =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    layer2 =  L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    layer3 =  L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    var allOptions = {
+        "Default": layer1,
+        "Open streetmap: Hot": layer2,
+        "Open streetmap: Osm": layer3
+    };  // all layers
+
+    L.control.layers(allOptions).addTo(map);
+
+    layer1.addTo(map);  //default layer
+
+        var list_long;
+        var list_lat;
+        var naziv;
+        var med_id;
+        var kat;
+
+        for (var i=0; i<document.getElementsByClassName('test').length; i++) {
+            list_long= list_long+','+ (document.getElementsByClassName('test').item(i).innerHTML)
+            list_lat= list_lat+','+ (document.getElementsByClassName('test_lat').item(i).innerHTML)
+            naziv = naziv + ','+ (document.getElementsByClassName('ime').item(i).innerHTML)
+            med_id = med_id + ','+ (document.getElementsByClassName('Med-id').item(i).innerHTML)
+            kat = kat + ','+ (document.getElementsByClassName('kat').item(i).innerHTML)
+        }
+
+        const temp_long = list_long.split(',');
+        const temp_lat = list_lat.split(',');
+        const temp_naziv = naziv.split(',');
+        const temp_med_id = med_id.split(',');
+        const temp_kat = kat.split(',');
+
+        for (var i = 1; i < temp_long.length; i++) {
+            var link_detailedView = "http://localhost:9090/MedicalLAB/" + temp_med_id[i];
+            marker = L.marker([temp_lat[i], temp_long[i]]).addTo(map)
+                .bindPopup('<span style="text-align: center">' + '<hr>' +
+                    '<h5> <b style="color: #3b5998">Име:</b> ' + temp_naziv[i] + '</h5>' +
+                    '<h5> <b style="color: #3b5998">Категорија:</b> ' + temp_kat[i] + '</h5>' +
+                    '<h5> <b style="color: #3b5998">Детален поглед:</b>  <a href='+link_detailedView+'> кликни тука </a></h5> ' + '<hr>' + '</span>');
+        }
+
+
+
+    // Zemanje lokacija na user preku geolocation i prikazuvanje najbliski med ustanovi
+
+    var user_lat;
+    var user_lng;
+    var layerGroup = L.layerGroup().addTo(map);
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
+        }
+    }
+
+    function showPosition(position) {
+        document.getElementById("latitude").innerHTML = position.coords.latitude;
+        document.getElementById("longitude").innerHTML = position.coords.longitude;
+        user_lat = parseFloat(document.getElementById("latitude").innerHTML);
+        user_lng = parseFloat(document.getElementById("longitude").innerHTML);
+
+        layerGroup.clearLayers();
+        L.marker([user_lat, user_lng]).addTo(layerGroup)
+                 .bindPopup('<h5> Твојата локација </h5>') .openPopup();
+
+        var user_location = [user_lat, user_lng];
+        if(user_lat!=null && user_lng!=null)
+        {
+            var circleCenter = user_location;
+
+            var circleOptions = {
+                color: 'blue',
+                fillColor: '#00f',
+                fillOpacity: 0.2
+            }
+
+            var circle = L.circle(circleCenter, 4000, circleOptions);
+            circle.addTo(layerGroup)
+
+            map.setView(new L.LatLng(user_lat, user_lng), 13);
+        }
+    }
+
+    $(document).on("click", "#geoLocation", function () {
+        getLocation();
+    });
+
+    // Zemanje lokacija na user preku geolocation i prikazuvanje najbliski med ustanovi END
+
+</script>
+
+<!-- JS for map design and funct. END-->
 
 </html>

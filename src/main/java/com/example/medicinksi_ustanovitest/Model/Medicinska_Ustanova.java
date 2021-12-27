@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Table(name = "Medicinski_Ustanovi")
 public class Medicinska_Ustanova {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Medicinska_ustanova_ID;
@@ -20,14 +21,7 @@ public class Medicinska_Ustanova {
     private Boolean Covid19_PCR_test, Brz_antigenski_test, Imuno_test;
     private String Online_booking, Cenovnik, Promocii;
     private String placeURL, imgURL;
-    private String Latitude, Longitude;
+    private Double Latitude, Longitude;
     private String Zabeleshki;
 
-    public Double getLongitude() {
-        return Double.parseDouble(Longitude);
-    }
-
-    public Double getLatitude() {
-        return Double.parseDouble(Latitude);
-    }
 }
