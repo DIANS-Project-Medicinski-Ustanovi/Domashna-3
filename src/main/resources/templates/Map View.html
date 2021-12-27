@@ -36,6 +36,22 @@
         }
     </script>
     <style>
+
+        .button {
+            background-color: rgba(78, 115, 223, .8);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: rgb(78, 115, 223);
+        }
         .sidebar{
             min-height: 135vh;
         }
@@ -297,7 +313,7 @@
                             </select>
                             </span>
 
-                            <input type="submit" value="Филтрирај " id="submitId"/>
+                            <input type="submit" value="Филтрирај" id="submitId" style="float: right"/>
 
                         </form>
                     <br>
@@ -317,10 +333,17 @@
                 <span>, ковид-19 тестирање: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${covidTest} ?: 'СИТЕ'"></span>
                 <span>, пронајдени: </span> <span style="display: inline-block;font-weight: bold; font-size: 19px" th:text="${sizeList} ?: '202'"></span>
 
+                <button id="geoLocation" class="button" style="float: right; margin-top: -26px" >
+                    Прикажи најблиски медицински установи
+                </button>
+
                 <div id="map" style="width: 100%; height: 750px">
 
                 </div>
                 <!--                Map END-->
+
+                <div id="latitude" style="display: none"> </div>
+                <div id="longitude" style="display: none"> </div>
 
                 <!--                Data for map loaction - marker -->
 
@@ -437,6 +460,55 @@
                     '<h5> <b style="color: #3b5998">Категорија:</b> ' + temp_kat[i] + '</h5>' +
                     '<h5> <b style="color: #3b5998">Детален поглед:</b>  <a href='+link_detailedView+'> кликни тука </a></h5> ' + '<hr>' + '</span>');
         }
+
+
+
+    // Zemanje lokacija na user preku geolocation i prikazuvanje najbliski med ustanovi
+
+    var user_lat;
+    var user_lng;
+    var layerGroup = L.layerGroup().addTo(map);
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            document.getElementById("latitude").innerHTML = "The Browser Does not Support                                                                       Geolocation";
+        }
+    }
+
+    function showPosition(position) {
+        document.getElementById("latitude").innerHTML = position.coords.latitude;
+        document.getElementById("longitude").innerHTML = position.coords.longitude;
+        user_lat = parseFloat(document.getElementById("latitude").innerHTML);
+        user_lng = parseFloat(document.getElementById("longitude").innerHTML);
+
+        layerGroup.clearLayers();
+        L.marker([user_lat, user_lng]).addTo(layerGroup)
+                 .bindPopup('<h5> Твојата локација </h5>') .openPopup();
+
+        var user_location = [user_lat, user_lng];
+        if(user_lat!=null && user_lng!=null)
+        {
+            var circleCenter = user_location;
+
+            var circleOptions = {
+                color: 'blue',
+                fillColor: '#00f',
+                fillOpacity: 0.2
+            }
+
+            var circle = L.circle(circleCenter, 4000, circleOptions);
+            circle.addTo(layerGroup)
+
+            map.setView(new L.LatLng(user_lat, user_lng), 13);
+        }
+    }
+
+    $(document).on("click", "#geoLocation", function () {
+        getLocation();
+    });
+
+    // Zemanje lokacija na user preku geolocation i prikazuvanje najbliski med ustanovi END
 
 </script>
 
