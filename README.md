@@ -1,6 +1,8 @@
 # Deploy на Heroku
 Со цел да се процесираат Ajax повиците, Ве замолуваме при преглед на апликацијата на следниот линк: https://go-lab.herokuapp.com/ во <b>Site settings -> Insecure content</b>, поставете опција <b>Allow</b>.
 
+>креиран е нов сервер, направена е мала промена во application.properties
+
 # Explore Go-LAB
 Линк до youtube презентација: https://www.youtube.com/watch?v=_CDoyksg6PM
 
